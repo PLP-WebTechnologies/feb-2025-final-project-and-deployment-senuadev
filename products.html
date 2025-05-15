@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Products - TechKenya</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .products-page {
+            padding: 4rem 1rem;
+        }
+        
+        .filters {
+            max-width: 1200px;
+            margin: 0 auto 3rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .search-box {
+            flex: 1;
+            max-width: 400px;
+            position: relative;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 0.8rem 1rem 0.8rem 3rem;
+            border: 1px solid #ddd;
+            border-radius: 50px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 1.2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+        }
+        
+        .sort-filter {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .sort-filter select {
+            padding: 0.6rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: white;
+            cursor: pointer;
+        }
+        
+        .category-filter {
+            display: flex;
+            gap: 1rem;
+            overflow-x: auto;
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+            scrollbar-width: none;
+        }
+        
+        .category-filter::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .category-btn {
+            padding: 0.5rem 1.2rem;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 50px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+        }
+        
+        .category-btn.active,
+        .category-btn:hover {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 3rem;
+        }
+        
+        .pagination a, 
+        .pagination span {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            color: var(--text-color);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .pagination a:hover,
+        .pagination .active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .no-products {
+            text-align: center;
+            grid-column: 1 / -1;
+            padding: 4rem 0;
+        }
+        
+        .no-products i {
+            font-size: 3rem;
+            color: #ddd;
+            margin-bottom: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .filters {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 1.5rem;
+            }
+            
+            .search-box {
+                max-width: 100%;
+            }
+            
+            .sort-filter {
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <a href="index.html">Tech<span>Kenya</span></a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="products.html" class="active">Products</a></li>
+                <li><a href="cart.html">Cart <span id="cart-count">0</span></a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <div class="hamburger">
+                <div class="line"></div>
+                <div class="line"></div>
+                <div class="line"></div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="section-header">
+        <h2>Our Products</h2>
+        <p>Discover our latest collection of premium electronics</p>
+    </div>
+
+    <div class="products-page">
+        <div class="filters">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search products..." id="searchInput">
+            </div>
+            <div class="sort-filter">
+                <label for="sort">Sort by:</label>
+                <select id="sort">
+                    <option value="featured">Featured</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
+                    <option value="name-asc">Name: A to Z</option>
+                    <option value="name-desc">Name: Z to A</option>
+                    <option value="rating">Highest Rated</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="category-filter">
+            <button class="category-btn active" data-category="all">All Products</button>
+            <button class="category-btn" data-category="smartphones">Smartphones</button>
+            <button class="category-btn" data-category="laptops">Laptops</button>
+            <button class="category-btn" data-category="audio">Audio</button>
+            <button class="category-btn" data-category="wearables">Wearables</button>
+            <button class="category-btn" data-category="tablets">Tablets</button>
+            <button class="category-btn" data-category="accessories">Accessories</button>
+        </div>
+        
+        <div class="products-grid" id="productsGrid">
+            <!-- Product cards will be dynamically loaded here -->
+            <div class="no-products">
+                <i class="fas fa-search"></i>
+                <h3>No products found</h3>
+                <p>Try adjusting your search or filter criteria</p>
+            </div>
+        </div>
+        
+        <div class="pagination">
+            <a href="#" class="prev">&laquo;</a>
+            <a href="#" class="active">1</a>
+            <a href="#">2</a>
+            <a href="#">3</a>
+            <a href="#">4</a>
+            <a href="#">5</a>
+            <a href="#" class="next">&raquo;</a>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>TechKenya</h3>
+                <p>Your one-stop shop for the latest and greatest in technology.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="products.html">Products</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <p><i class="fas fa-map-marker-alt"></i> Nairobi, Kenya</p>
+                <p><i class="fas fa-phone"></i> +254 722 123 456</p>
+                <p><i class="fas fa-envelope"></i> support@techkenya.com</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 TechKenya. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+    <script>
+        // Sample product data - in a real app, this would come from an API
+        const products = [
+            {
+                id: 1,
+                name: 'Iphone Pro',
+                category: 'smartphones',
+                price: 999.99,
+                originalPrice: 1199.99,
+                rating: 4.5,
+                ratingCount: 128,
+                image: 'images/iphone.jpg',
+                isNew: true,
+                isBestseller: true
+            },
+            {
+                id: 2,
+                name: 'Macbook Air Pro',
+                category: 'laptops',
+                price: 1299.99,
+                originalPrice: 1499.99,
+                rating: 4.8,
+                ratingCount: 89,
+                image: 'images/macbookair.jpg',
+                isNew: true
+            },
+            {
+                id: 3,
+                name: 'Wireless Earbuds Pro',
+                category: 'audio',
+                price: 199.99,
+                originalPrice: 249.99,
+                rating: 4.7,
+                ratingCount: 215,
+                image: 'images/wireless earbuds.jpg',
+                isBestseller: true
+            },
+            {
+                id: 4,
+                name: 'Smart Watch 4',
+                category: 'wearables',
+                price: 299.99,
+                rating: 4.3,
+                ratingCount: 76,
+                image: 'images/smartwatch.jpg',
+                isNew: true
+            },
+            {
+                id: 5,
+                name: 'Ipad Pro',
+                category: 'tablets',
+                price: 499.99,
+                rating: 4.6,
+                ratingCount: 142,
+                image: 'images/ipad.jpg'
+            },
+            {
+                id: 6,
+                name: 'Portable Speaker',
+                category: 'audio',
+                price: 89.99,
+                originalPrice: 129.99,
+                rating: 4.2,
+                ratingCount: 98,
+                image: 'images/portablespeaker.jpg'
+            },
+            {
+                id: 7,
+                name: 'Gaming Laptop',
+                category: 'laptops',
+                price: 1499.99,
+                rating: 4.9,
+                ratingCount: 64,
+                image: 'images/gaminglaptop.jpg',
+                isNew: true
+            },
+            {
+                id: 8,
+                name: 'Wireless Charger',
+                category: 'accessories',
+                price: 29.99,
+                rating: 4.0,
+                ratingCount: 203,
+                image: 'images/wirelesscharger.jpg',
+                isBestseller: true
+            }
+        ];
+
+        // DOM Elements
+        const productsGrid = document.getElementById('productsGrid');
+        const searchInput = document.getElementById('searchInput');
+        const sortSelect = document.getElementById('sort');
+        const categoryBtns = document.querySelectorAll('.category-btn');
+        
+        // Current filter state
+        let currentCategory = 'all';
+        let currentSearch = '';
+        let currentSort = 'featured';
+        
+        // Initialize the page
+        function init() {
+            renderProducts(products);
+            setupEventListeners();
+        }
+        
+        // Set up event listeners
+        function setupEventListeners() {
+            // Search input
+            searchInput.addEventListener('input', (e) => {
+                currentSearch = e.target.value.toLowerCase();
+                filterAndSortProducts();
+            });
+            
+            // Sort select
+            sortSelect.addEventListener('change', (e) => {
+                currentSort = e.target.value;
+                filterAndSortProducts();
+            });
+            
+            // Category buttons
+            categoryBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Update active state
+                    document.querySelector('.category-btn.active').classList.remove('active');
+                    btn.classList.add('active');
+                    
+                    // Update category filter
+                    currentCategory = btn.dataset.category;
+                    filterAndSortProducts();
+                });
+            });
+        }
+        
+        // Filter and sort products based on current state
+        function filterAndSortProducts() {
+            let filteredProducts = [...products];
+            
+            // Apply search filter
+            if (currentSearch) {
+                filteredProducts = filteredProducts.filter(product => 
+                    product.name.toLowerCase().includes(currentSearch) ||
+                    product.category.toLowerCase().includes(currentSearch)
+                );
+            }
+            
+            // Apply category filter
+            if (currentCategory !== 'all') {
+                filteredProducts = filteredProducts.filter(
+                    product => product.category === currentCategory
+                );
+            }
+            
+            // Apply sorting
+            filteredProducts = sortProducts(filteredProducts, currentSort);
+            
+            // Render the filtered and sorted products
+            renderProducts(filteredProducts);
+        }
+        
+        // Sort products based on the selected option
+        function sortProducts(products, sortBy) {
+            const sortedProducts = [...products];
+            
+            switch (sortBy) {
+                case 'price-low':
+                    return sortedProducts.sort((a, b) => a.price - b.price);
+                case 'price-high':
+                    return sortedProducts.sort((a, b) => b.price - a.price);
+                case 'name-asc':
+                    return sortedProducts.sort((a, b) => a.name.localeCompare(b.name));
+                case 'name-desc':
+                    return sortedProducts.sort((a, b) => b.name.localeCompare(a.name));
+                case 'rating':
+                    return sortedProducts.sort((a, b) => b.rating - a.rating);
+                case 'featured':
+                default:
+                    // Featured products first, then by bestsellers, then by newest
+                    return sortedProducts.sort((a, b) => {
+                        if (a.isBestseller && !b.isBestseller) return -1;
+                        if (!a.isBestseller && b.isBestseller) return 1;
+                        if (a.isNew && !b.isNew) return -1;
+                        if (!a.isNew && b.isNew) return 1;
+                        return 0;
+                    });
+            }
+        }
+        
+        // Render products to the grid
+        function renderProducts(productsToRender) {
+            if (productsToRender.length === 0) {
+                productsGrid.innerHTML = `
+                    <div class="no-products">
+                        <i class="fas fa-search"></i>
+                        <h3>No products found</h3>
+                        <p>Try adjusting your search or filter criteria</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            productsGrid.innerHTML = productsToRender.map(product => `
+                <div class="product-card" data-id="${product.id}">
+                    ${product.isNew ? '<div class="product-badge">New</div>' : ''}
+                    ${product.isBestseller ? '<div class="product-badge">Bestseller</div>' : ''}
+                    <div class="product-image">
+                        <img src="${product.image}" alt="${product.name}">
+                    </div>
+                    <div class="product-info">
+                        <span class="product-category">${formatCategory(product.category)}</span>
+                        <h3>${product.name}</h3>
+                        <div class="product-rating">
+                            ${renderRatingStars(product.rating)}
+                            <span>(${product.ratingCount})</span>
+                        </div>
+                        <div class="product-price">
+                            <span class="current-price">$${product.price.toFixed(2)}</span>
+                            ${product.originalPrice ? 
+                                `<span class="original-price">$${product.originalPrice.toFixed(2)}</span>` : ''}
+                        </div>
+                        <button class="add-to-cart">
+                            <i class="fas fa-shopping-cart"></i> Add to Cart
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // Helper function to render rating stars
+        function renderRatingStars(rating) {
+            const fullStars = Math.floor(rating);
+            const hasHalfStar = rating % 1 >= 0.5;
+            const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+            
+            let stars = '';
+            
+            // Full stars
+            for (let i = 0; i < fullStars; i++) {
+                stars += '<i class="fas fa-star"></i>';
+            }
+            
+            // Half star
+            if (hasHalfStar) {
+                stars += '<i class="fas fa-star-half-alt"></i>';
+            }
+            
+            // Empty stars
+            for (let i = 0; i < emptyStars; i++) {
+                stars += '<i class="far fa-star"></i>';
+            }
+            
+            return stars;
+        }
+        
+        // Helper function to format category
+        function formatCategory(category) {
+            return category.charAt(0).toUpperCase() + category.slice(1);
+        }
+        
+        // Initialize the page
+        init();
+    </script>
+</body>
+</html>
